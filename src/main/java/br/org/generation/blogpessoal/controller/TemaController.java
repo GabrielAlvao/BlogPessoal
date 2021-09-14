@@ -25,32 +25,35 @@ public class TemaController {
 
 	@Autowired
 	private TemaRepository temaRepository;
-
+	
+	//Metodo para listar todos os temas
 	@GetMapping
 	public ResponseEntity<List<Tema>> getAll() {
 		return ResponseEntity.ok(temaRepository.findAll());
 
 	}
-
+	//Metodo para listar temas pelo id
 	@GetMapping("/{id}")
 	public ResponseEntity<Tema> getById(@PathVariable long id) {
 		return temaRepository.findById(id).map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
 	}
-
+	//Metodo para listar temas pela descrição 
 	@GetMapping("/descricao/{descricao}")
 	public ResponseEntity<List<Tema>> getByDescricao(@PathVariable String descricao) {
 		return ResponseEntity.ok(temaRepository.findAllByDescricaoContainingIgnoreCase(descricao));
 	}
+	//Metodo para criar um tema e salvá-lo como um objeto no nosso banco de dados
 	@PostMapping
 	public ResponseEntity<Tema> postTema(@RequestBody Tema tema){
-		return ResponseEntity.status(HttpStatus.CREATED).body(temaRepository.save(tema));
-		
+		return ResponseEntity.status(HttpStatus.CREATED).body(temaRepository.save(tema));	
 	}
+	//Metodo para alterar um tema e salvá-lo como um objeto no banco de dados
 	@PutMapping
 	public ResponseEntity<Tema> putTema(@RequestBody Tema tema){
 		return ResponseEntity.status(HttpStatus.OK).body(temaRepository.save(tema));
 	}
+	//Metodo para deletar um tema pelo id
 	@DeleteMapping("/{id}")
 	public void deleteTema(@PathVariable long id) {
 		temaRepository.deleteById(id);

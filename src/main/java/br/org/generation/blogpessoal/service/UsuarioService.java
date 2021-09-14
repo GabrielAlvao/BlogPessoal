@@ -52,7 +52,7 @@ public class UsuarioService {
 		 int idade = Period.between(usuario.getDataNascimento(), LocalDate.now()).getYears();
 		
 		/**
-		 * Verifica se a iade é menor de 18. Caso positivo,
+		 * Verifica se a idade é menor de 18. Caso positivo,
 		 * Lança uma Exception do tipo Response Status Bad Request 
 		 */
 		
@@ -131,14 +131,15 @@ public class UsuarioService {
 
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Optional<Usuario> usuario = usuarioRepository.findByUsuario(usuarioLogin.get().getUsuario());
-
+		//Verifica se usuario existe
 		if (usuario.isPresent()) {
+			//Caso exista compara as senhas para validar
 			if (encoder.matches(usuarioLogin.get().getSenha(), usuario.get().getSenha())) {
-
+				
 				String auth = usuarioLogin.get().getUsuario() + ":" + usuarioLogin.get().getSenha();
 				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
 				String authHeader = "Basic " + new String(encodedAuth);
-
+				//Preenche o usuario login com os dados do usuario para fazer a validação do login
 				usuarioLogin.get().setId(usuario.get().getId());				
 				usuarioLogin.get().setNome(usuario.get().getNome());
 				usuarioLogin.get().setSenha(usuario.get().getSenha());
@@ -156,5 +157,10 @@ public class UsuarioService {
 		throw new ResponseStatusException(
 				HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!", null);
 	}
-
+	public List<Usuario> buscarUsuarios(){
+		return usuarioRepository.findAll();
+	}
+	public Optional<Usuario> buscarPeloId(long id){
+		return usuarioRepository.findById(id);
+	}
 }
